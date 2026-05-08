@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exámenes Oposiciones · Tecnología Secundaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e13;
+    --surface: #16161f;
+    --surface2: #1e1e2a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --green: #3fcf8e;
+    --amber: #f5a623;
+    --text: #e8e6f0;
+    --muted: #888899;
+    --pill: #232330;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0e0e13 0%, #1a1030 50%, #0e1318 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(124,92,191,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .stat-chip {
+    background: var(--pill);
+    border: 1px solid var(--border2);
+    border-radius: 99px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-chip strong { color: var(--text); }
+
+  /* CONTROLS */
+  .controls-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .controls {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-wrap {
+    flex: 1;
+    min-width: 180px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 10px; top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px 8px 34px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  select:focus { border-color: var(--accent); }
+  .result-count {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 3rem;
+  }
+
+  /* REGION */
+  .region { margin-bottom: 2rem; }
+  .region-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .region-flag {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .region-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .region-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--pill);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+
+  /* GRID */
+  .exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .card:hover {
+    border-color: var(--border2);
+    transform: translateY(-1px);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-year {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .card-title {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .card-meta {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 99px;
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-type {
+    background: rgba(79,142,247,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.2);
+  }
+  .badge-sol {
+    background: rgba(63,207,142,0.1);
+    color: var(--green);
+    border: 1px solid rgba(63,207,142,0.2);
+  }
+  .badge-nosol {
+    background: rgba(136,136,153,0.08);
+    color: var(--muted);
+    border: 1px solid rgba(136,136,153,0.15);
+  }
+  .card-links {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:hover { opacity: 0.82; transform: scale(0.97); }
+  .btn-pdf {
+    background: rgba(79,142,247,0.15);
+    color: #7ab3ff;
+    border: 1px solid rgba(79,142,247,0.25);
+  }
+  .btn-sol {
+    background: rgba(63,207,142,0.12);
+    color: var(--green);
+    border: 1px solid rgba(63,207,142,0.22);
+  }
+  .btn-web {
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border2);
+  }
+  .btn-oficial {
+    background: rgba(245,166,35,0.1);
+    color: var(--amber);
+    border: 1px solid rgba(245,166,35,0.2);
+  }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    header, .controls-wrap, main { padding-left: 1rem; padding-right: 1rem; }
+    h1 { font-size: 1.4rem; }
+    .exam-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">// Banco de exámenes · Actualizado 2026</div>
+    <h1>Oposiciones <span>Tecnología</span><br>Secundaria · España</h1>
+    <p class="subtitle">Pruebas prácticas y exámenes históricos por comunidad autónoma · Especialidad 201 · Cuerpo 590</p>
+    <div class="stats-bar">
+      <div class="stat-chip"><strong id="total-count">—</strong> exámenes</div>
+      <div class="stat-chip"><strong>16</strong> comunidades</div>
+      <div class="stat-chip"><strong>2016 – 2025</strong></div>
+      <div class="stat-chip">Temario común <strong>71 temas</strong></div>
+    </div>
+  </div>
+</header>
+
+<div class="controls-wrap">
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <circle cx="6.5" cy="6.5" r="5.5" stroke="white" stroke-width="1.5"/>
+        <path d="M10.5 10.5L14 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" id="search" placeholder="Buscar comunidad, año, tipo…" oninput="render()">
+    </div>
+    <select id="yearFilter" onchange="render()">
+      <option value="">Todos los años</option>
+      <option>2025</option><option>2024</option><option>2023</option>
+      <option>2021</option><option>2020</option><option>2019</option>
+      <option>2018</option><option>2016</option>
+    </select>
+    <select id="solFilter" onchange="render()">
+      <option value="">Con y sin solución</option>
+      <option value="sol">Con solución</option>
+      <option value="nosol">Sin solución publicada</option>
+    </select>
+    <span class="result-count" id="result-count"></span>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<footer>
+  Fuentes: <a href="https://www.cede.es/prueba-practica/" target="_blank">CEDE</a> ·
+  <a href="https://abacusnt.es/descargas/examenes/" target="_blank">AbacusNT</a> ·
+  <a href="https://www.oposinet.com" target="_blank">Oposinet</a> ·
+  <a href="https://www.educastur.es" target="_blank">Educastur</a> ·
+  Consejerías de Educación de las CC.AA.<br>
+  Los enlaces de PDF acceden a archivos públicos. Los "ver carpeta" llevan a índices con exámenes por especialidad (busca el código 201 = Tecnología).
+</footer>
+
+<script>
+const DATA = [
+  {
+    region: "Andalucía", flag: "🌞", color: "#4f8ef7",
+    exams: [
+      { year: 2025, title: "Prueba práctica Andalucía 2025", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Andaluc%C3%ADa%202025/", type: "web" }] },
+      { year: 2024, title: "Prueba práctica Andalucía 2024", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Andaluc%C3%ADa%202024/", type: "web" }] },
+      { year: 2023, title: "Prueba práctica Andalucía 2023", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Andaluc%C3%ADa%202023/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica Andalucía 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Andaluc%C3%ADa%202021/", type: "web" }, { label: "🌐 Infoposiciones", url: "https://www.infoposiciones.net/descarga-examenes-oposiciones-secundaria-andalucia/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Andalucía 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Andaluc%C3%ADa%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Aragón", flag: "⚔️", color: "#7c5cbf",
+    exams: [
+      { year: 2025, title: "Prueba práctica Aragón 2025", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Arag%C3%B3n%202025/", type: "web" }] },
+      { year: 2024, title: "Prueba práctica Aragón 2024", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Arag%C3%B3n%202024/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica Aragón 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Arag%C3%B3n%202021/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Aragón 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Arag%C3%B3n%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Asturias", flag: "🏔️", color: "#3fcf8e",
+    exams: [
+      { year: 2025, title: "Prueba práctica Asturias 2024-25", tipo: "Práctica", sol: false, links: [{ label: "🏛️ Educastur oficial", url: "https://www.educastur.es/-/procedimiento-selectivo-24-25-ejercicios-parte-a", type: "oficial" }] },
+      { year: 2021, title: "Prueba práctica Asturias 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Principado%20de%20Asturias%202020/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Asturias 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Principado%20de%20Asturias%202018/", type: "web" }] },
+      { year: 0, title: "Ejemplo examen Asturias · Uniovi", tipo: "Ejemplo", sol: false, links: [{ label: "📄 PDF directo", url: "https://www.unioviedo.es/fombona/OPOS.pdf", type: "pdf" }] },
+    ]
+  },
+  {
+    region: "Baleares", flag: "🏝️", color: "#f5a623",
+    exams: [
+      { year: 2018, title: "Prueba práctica Baleares 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Baleares%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Canarias", flag: "🌋", color: "#4f8ef7",
+    exams: [
+      { year: 2021, title: "Prueba práctica Canarias 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Canarias%202021/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Canarias 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Canarias%202018/", type: "web" }, { label: "🌐 STEC-IC", url: "https://www.stec.es/stec/actualidad/oposiciones-y-acceso-funcion-publica_31/publicados-los-supuestos-practicos-de-las-oposiciones-de-secundaria-fp-y-eoi-2018:13461", type: "web" }] },
+    ]
+  },
+  {
+    region: "Cantabria", flag: "🌊", color: "#7c5cbf",
+    exams: [
+      { year: 2018, title: "Prueba práctica Cantabria 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Cantabria%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Castilla-La Mancha", flag: "🏰", color: "#e05a2b",
+    exams: [
+      { year: 2023, title: "Prueba práctica C. La Mancha 2023", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Castilla%20La%20Mancha%202023/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica C. La Mancha 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Castilla%20La%20Mancha%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Castilla y León", flag: "🦁", color: "#f5a623",
+    exams: [
+      { year: 2023, title: "Prueba práctica C. y León 2023", tipo: "Práctica", sol: false, links: [{ label: "📄 PDF CEDE", url: "https://www.cede.es/examenes2023/cyl/309E.pdf", type: "pdf" }, { label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Castilla%20y%20Le%C3%B3n%202023/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica C. y León 2021", tipo: "Práctica", sol: false, links: [{ label: "🏛️ Junta CyL", url: "https://www.educa.jcyl.es/dppalencia/es/personal-docente-laboral/oposiciones-pes-cuerpos-2024/oposiciones-pes-tecnologia", type: "oficial" }] },
+      { year: 2020, title: "Prueba práctica C. y León 2020", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Castilla%20y%20Leon%202020/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Cataluña", flag: "🔶", color: "#3fcf8e",
+    exams: [
+      { year: 2021, title: "Prueba práctica Cataluña 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Catalu%C3%B1a%202021/", type: "web" }] },
+      { year: 2020, title: "Prueba práctica Cataluña 2020", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Catalu%C3%B1a%202020/", type: "web" }] },
+      { year: 2019, title: "Prueba práctica Cataluña 2019", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Catalu%C3%B1a%202019/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Cataluña 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Catalu%C3%B1a%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Ceuta y Melilla", flag: "🕌", color: "#4f8ef7",
+    exams: [
+      { year: 2021, title: "Prueba práctica Ceuta / Melilla 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Ceuta%20y%20Melilla%202021/", type: "web" }] },
+      { year: 2019, title: "Prueba práctica Ceuta / Melilla 2019", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Ceuta%20y%20Melilla%202019/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Extremadura", flag: "🌿", color: "#7c5cbf",
+    exams: [
+      { year: 2024, title: "Prueba práctica Extremadura 2024", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Extremadura%202024/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica Extremadura 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Extremadura%202021/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Extremadura 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Extremadura%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Galicia", flag: "🐚", color: "#3fcf8e",
+    exams: [
+      { year: 2019, title: "Prueba práctica Galicia 2019", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Galicia%202019/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica Galicia 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Galicia%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "La Rioja", flag: "🍇", color: "#e05a2b",
+    exams: [
+      { year: 2021, title: "Prueba práctica La Rioja 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/La%20Rioja%202021/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica La Rioja 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/La%20Rioja%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Madrid", flag: "🏛️", color: "#4f8ef7",
+    exams: [
+      { year: 2025, title: "Prueba práctica Madrid 2025", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Madrid%202025/", type: "web" }] },
+      { year: 2023, title: "Prueba práctica Madrid 2023 — reposición", tipo: "Práctica", sol: false, links: [{ label: "📄 PDF CEDE", url: "https://www.cede.es/examenes2023/madrid/201MAD.pdf", type: "pdf" }, { label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Madrid%202023/", type: "web" }] },
+      { year: 2023, title: "Prueba práctica Madrid 2023 — estabilización", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Madrid%202023/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica Madrid 2021", tipo: "Práctica", sol: true, links: [{ label: "📄 PDF examen", url: "https://www.cede.es/examenes2021/madrid/201MAD.pdf", type: "pdf" }, { label: "✅ Resolución CEDE", url: "https://www.cede.es/examenes-resueltos/resolucion-examen-tecnologia-2018/", type: "sol" }] },
+      { year: 2018, title: "Prueba práctica Madrid 2018", tipo: "Práctica", sol: true, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Madrid%202018/", type: "web" }, { label: "✅ Resolución CEDE", url: "https://www.cede.es/examenes-resueltos/resolucion-examen-tecnologia-2018/", type: "sol" }] },
+    ]
+  },
+  {
+    region: "Murcia", flag: "🌶️", color: "#e05a2b",
+    exams: [
+      { year: 2021, title: "Prueba práctica Murcia 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Murcia%202021/", type: "web" }, { label: "🏛️ CARM oficial", url: "https://www.carm.es/web/pagina?IDCONTENIDO=69959&IDTIPO=100&RASTRO=c798$m3977,69334", type: "oficial" }] },
+      { year: 2018, title: "Prueba práctica Murcia 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Murcia%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Navarra", flag: "🏔️", color: "#7c5cbf",
+    exams: [
+      { year: 2024, title: "Prueba práctica Navarra 2024", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Navarra%202024/", type: "web" }] },
+      { year: 2021, title: "Prueba práctica Navarra 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Navarra%202021/", type: "web" }] },
+      { year: 2020, title: "Prueba práctica Navarra 2020", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Navarra%202020/", type: "web" }] },
+    ]
+  },
+  {
+    region: "País Vasco", flag: "⚒️", color: "#3fcf8e",
+    exams: [
+      { year: 2021, title: "Prueba práctica País Vasco 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Pais%20Vasco%202021/", type: "web" }] },
+      { year: 2020, title: "Prueba práctica País Vasco 2020", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Pais%20Vasco%202020/", type: "web" }] },
+      { year: 2018, title: "Prueba práctica País Vasco 2018", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Pa%C3%ADs%20Vasco%202018/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Valencia", flag: "🍊", color: "#f5a623",
+    exams: [
+      { year: 2021, title: "Prueba práctica Valencia 2021", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Valencia%202021/", type: "web" }] },
+      { year: 2019, title: "Prueba práctica Valencia 2019", tipo: "Práctica", sol: false, links: [{ label: "📂 Carpeta exámenes", url: "https://abacusnt.es/descargas/examenes/Valencia%202019/", type: "web" }] },
+    ]
+  },
+  {
+    region: "Recursos generales", flag: "📚", color: "#888899",
+    exams: [
+      { year: 0, title: "Banco de exámenes AbacusNT — todas las CCAA", tipo: "Histórico", sol: false, links: [{ label: "🌐 Abrir AbacusNT", url: "https://abacusnt.es/descargas/examenes/", type: "web" }] },
+      { year: 0, title: "Prueba práctica Madrid 2021 — CEDE", tipo: "Banco ejercicios", sol: false, links: [{ label: "📄 PDF directo", url: "https://cede.es/PDF/Tecnologia/practico_tecnologia.pdf", type: "pdf" }] },
+      { year: 0, title: "Ejercicios resueltos múltiples CCAA — CEDE", tipo: "Resueltos", sol: true, links: [{ label: "✅ Ver resueltos", url: "https://www.cede.es/resolucion-de-problemas-oposiciones-secundaria-ultimas-convocatorias/", type: "sol" }] },
+      { year: 0, title: "Histórico pruebas prácticas — CEDE", tipo: "Histórico", sol: false, links: [{ label: "🌐 Ver página CEDE", url: "https://www.cede.es/prueba-practica/", type: "web" }] },
+      { year: 0, title: "Simulacro examen práctico — Oposinet", tipo: "Simulacro", sol: false, links: [{ label: "📄 PDF simulacro", url: "https://www.oposinet.com/wp-content/uploads/2016/08/Ex%C3%A1men-8-.pdf", type: "pdf" }] },
+      { year: 0, title: "Simulacro completo — Paulino Posada", tipo: "Simulacro", sol: false, links: [{ label: "📄 PDF simulacro", url: "https://paulinoposada.github.io/web/websites/paulino/opos/practica/opo_exam_practica.pdf", type: "pdf" }] },
+    ]
+  },
+];
+
+function btnClass(type) {
+  if (type === 'pdf') return 'btn btn-pdf';
+  if (type === 'sol') return 'btn btn-sol';
+  if (type === 'oficial') return 'btn btn-oficial';
+  return 'btn btn-web';
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const yr = document.getElementById('yearFilter').value;
+  const sf = document.getElementById('solFilter').value;
+  const main = document.getElementById('main');
+  let total = 0;
+  let html = '';
+
+  DATA.forEach(r => {
+    let exams = r.exams.filter(e => {
+      const matchQ = !q || r.region.toLowerCase().includes(q) || e.title.toLowerCase().includes(q) || e.tipo.toLowerCase().includes(q) || String(e.year).includes(q);
+      const matchY = !yr || String(e.year) === yr;
+      const matchS = !sf || (sf === 'sol' ? e.sol : !e.sol);
+      return matchQ && matchY && matchS;
+    });
+    if (!exams.length) return;
+    total += exams.length;
+
+    html += `<div class="region">
+      <div class="region-header">
+        <div class="region-flag" style="background:${r.color}22;border:1px solid ${r.color}33">${r.flag}</div>
+        <span class="region-name">${r.region}</span>
+        <span class="region-count">${exams.length}</span>
+      </div>
+      <div class="exam-grid">`;
+
+    exams.forEach(e => {
+      const yearLabel = e.year > 0 ? `<div class="card-year">${e.year}</div>` : `<div class="card-year">—</div>`;
+      const solBadge = e.sol ? `<span class="badge badge-sol">con solución</span>` : `<span class="badge badge-nosol">sin solución</span>`;
+      const typeBadge = `<span class="badge badge-type">${e.tipo}</span>`;
+      const links = e.links.map(l => `<a class="${btnClass(l.type)}" href="${l.url}" target="_blank">${l.label}</a>`).join('');
+      html += `<div class="card">
+        ${yearLabel}
+        <div class="card-title">${e.title}</div>
+        <div class="card-meta">${typeBadge}${solBadge}</div>
+        <div class="card-links">${links}</div>
+      </div>`;
+    });
+
+    html += '</div></div>';
+  });
+
+  if (!html) html = '<div class="empty">Sin resultados para esos filtros.</div>';
+  main.innerHTML = html;
+
+  document.getElementById('total-count').textContent = DATA.reduce((a, r) => a + r.exams.length, 0);
+  document.getElementById('result-count').textContent = `${total} resultado${total !== 1 ? 's' : ''}`;
+}
+
+render();
+</script>
+</body>
+</html>
